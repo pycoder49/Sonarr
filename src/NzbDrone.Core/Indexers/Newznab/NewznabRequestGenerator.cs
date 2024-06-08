@@ -400,7 +400,7 @@ namespace NzbDrone.Core.Indexers.Newznab
 
                 var includeAnimeStandardFormatSearch = Settings.AnimeStandardFormatSearch &&
                                                        searchCriteria.SeasonNumber > 0 &&
-                                                       searchCriteria.EpisodeNumber > 0;
+                                                       searchCriteria.EpisodeNumber == 1; // hack to reduce the number of searches for instructional purposes
 
                 if (includeAnimeStandardFormatSearch)
                 {
@@ -414,10 +414,13 @@ namespace NzbDrone.Core.Indexers.Newznab
 
                 foreach (var queryTitle in queryTitles)
                 {
-                    pageableRequests.Add(GetPagedRequests(MaxPages,
-                        Settings.AnimeCategories,
-                        "search",
-                        $"&q={NewsnabifyTitle(queryTitle)}+{searchCriteria.AbsoluteEpisodeNumber:00}"));
+                    if (searchCriteria.AbsoluteEpisodeNumber == 1) // Hack to reduce number of searches for instructional purposes.  
+                    {
+                        pageableRequests.Add(GetPagedRequests(MaxPages,
+                            Settings.AnimeCategories,
+                            "search",
+                            $"&q={NewsnabifyTitle(queryTitle)}+{searchCriteria.AbsoluteEpisodeNumber:00}"));
+                    }
 
                     if (includeAnimeStandardFormatSearch)
                     {
